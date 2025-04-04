@@ -1,0 +1,57 @@
+import React, { useState, useContext } from 'react';
+import { AppContext } from '../Context/appContext';
+import { Avatar, IconButton } from '@material-ui/core';
+import { DonutLarge, Chat, MoreVert, SearchOutlined } from '@material-ui/icons';
+
+
+function Sidebar() {
+  const { rooms, addRoom, setCurrentRoom } = useContext(AppContext); // Destructure addRoom from context
+  const [newRoomName, setNewRoomName] = useState('');
+
+  const handleAddRoom = (e) => {
+    e.preventDefault();
+    if (newRoomName.trim() !== '') {
+      addRoom(newRoomName); // Now addRoom is properly defined
+      setNewRoomName('');
+    }
+  };
+
+  return (
+    <div className="sidebar">
+      <div className="sidebar__header">
+        <Avatar />
+        <div className="sidebar__headerRight">
+          <IconButton><DonutLarge /></IconButton>
+          <IconButton><Chat /></IconButton>
+          <IconButton><MoreVert /></IconButton>
+        </div>
+      </div>
+      <div className="sidebar__search">
+        <div className="sidebar__searchContainer">
+          <SearchOutlined />
+          <input placeholder="Search or start new chat" type="text" />
+        </div>
+      </div>
+      <div className="sidebar__chats">
+        <form onSubmit={handleAddRoom}>
+          <input
+            type="text"
+            value={newRoomName}
+            onChange={(e) => setNewRoomName(e.target.value)}
+            placeholder="Enter new room name"
+          />
+          <button type="submit">Add Room</button>
+        </form>
+        {rooms.map(room => (
+          <SidebarChat />
+            key={room.id} 
+            room={room}
+            onClick={() => setCurrentRoom(room)}
+          
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default Sidebar;
